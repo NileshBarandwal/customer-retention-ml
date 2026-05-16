@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: .
+    image: customer-retention-ml:1.0
+    container_name: retention-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models:ro
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request, sys; urllib.request.urlopen('http://localhost:8000/health', timeout=3); sys.exit(0)"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  dashboard:
+    image: customer-retention-ml:1.0
+    container_name: retention-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      RETENTION_API_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    command:
+      - streamlit
+      - run
+      - dashboard/app.py
+      - --server.port=8501
+      - --server.address=0.0.0.0
+      - --server.headless=true
+      - --browser.gatherUsageStats=false
+    restart: unless-stopped
