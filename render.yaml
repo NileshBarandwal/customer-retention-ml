@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: customer-retention-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt && python -m src.data_processing && python -m src.train
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+    healthCheckPath: /health
