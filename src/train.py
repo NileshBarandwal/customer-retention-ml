@@ -16,6 +16,7 @@ import mlflow.sklearn
 import mlflow.xgboost
 import numpy as np
 import pandas as pd
+import shap
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
@@ -388,9 +389,25 @@ def run_experiments(run_mlflow: bool = True) -> dict:
     best_path = MODELS_DIR / "best_model.joblib"
     joblib.dump(best_model, best_path)
 
-    print(f"\n  Best model : {best_name}")
-    print(f"  Reason     : Highest validation AUC-ROC = {best_auc:.4f}")
-    print(f"  Saved to   : {best_path}")
+    # SHAP explainer for serving — TreeExplainer needs the raw estimator,
+    # so unwrap Pipelines (e.g. LR's StandardScaler+LR) to their final step.
+    explainer_path = MODELS_DIR / "shap_explainer.joblib"
+    estimator_for_shap = best_model
+    if hasattr(best_model, "named_steps"):
+        estimator_for_shap = list(best_model.named_steps.values())[-1]
+
+    explainer_status: str
+    try:
+        explainer = shap.TreeExplainer(estimator_for_shap)
+        joblib.dump(explainer, explainer_path)
+        explainer_status = f"Saved to '{explainer_path}'"
+    except Exception as exc:
+        explainer_status = f"Skipped — {type(exc).__name__}: {exc}"
+
+    print(f"\n  Best model     : {best_name}")
+    print(f"  Reason         : Highest validation AUC-ROC = {best_auc:.4f}")
+    print(f"  Saved to       : {best_path}")
+    print(f"  SHAP explainer : {explainer_status}")
     print(f"{'=' * 75}\n")
 
     return {name: res["val"] for name, res in results.items()}
