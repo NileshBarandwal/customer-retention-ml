@@ -3,7 +3,6 @@
 > An end-to-end machine learning system that predicts whether a telecom customer will leave, explains why, and serves predictions via a REST API and interactive dashboard.
 
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-22c55e)
 ![XGBoost](https://img.shields.io/badge/XGBoost-3.2-E76F00?logo=xgboost&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.116-009688?logo=fastapi&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.57-FF4B4B?logo=streamlit&logoColor=white)
@@ -17,21 +16,21 @@
 | High-risk prediction | Low-risk prediction |
 |---|---|
 | ![High Risk](docs/screenshots/dashboard_prediction.png) | ![Low Risk](docs/screenshots/dashboard_prediction_low_risk.png) |
-| *High-risk customer: 75.9% churn probability — Will Leave* | *Low-risk customer: 14.5% churn probability — Will Stay* |
+| *High-risk customer: 75.9% churn probability, Will Leave* | *Low-risk customer: 14.5% churn probability, Will Stay* |
 
 | SHAP global importance |
 |---|
 | ![SHAP](docs/screenshots/shap_summary.png) |
 
-*SHAP feature importance — Contract type and tenure are the strongest churn drivers*
+*SHAP feature importance: Contract type and tenure are the strongest churn drivers*
 
 ---
 
 ## Project Overview
 
-Telecom companies lose substantial revenue to churn — customers who cancel their subscriptions — and acquiring a new customer costs five to seven times more than retaining an existing one. This project builds a production-grade ML system that ingests customer account and usage data, predicts the probability that a customer will leave, and explains exactly which factors drove that prediction so retention teams can act on it.
+Telecom companies lose substantial revenue to churn (customers who cancel their subscriptions), and acquiring a new customer costs five to seven times more than retaining an existing one. This project builds a production-grade ML system that ingests customer account and usage data, predicts the probability that a customer will leave, and explains exactly which factors drove that prediction so retention teams can act on it.
 
-The dataset is the IBM Telco Customer Churn dataset: **7,043 customers**, **19 features** covering demographics, account tenure, subscribed services, and billing, with a **26.54% churn rate**. The dominant modelling challenge is class imbalance — roughly 3 retained customers for every 1 who churns — addressed using `class_weight='balanced'` for sklearn models and `scale_pos_weight` (≈ 2.77) for XGBoost, ensuring the model is penalised appropriately for missing churners rather than simply predicting the majority class.
+The dataset is the IBM Telco Customer Churn dataset: **7,043 customers**, **19 features** covering demographics, account tenure, subscribed services, and billing, with a **26.54% churn rate**. The dominant modelling challenge is class imbalance (roughly 3 retained customers for every 1 who churns), addressed using `class_weight='balanced'` for sklearn models and `scale_pos_weight` (≈ 2.77) for XGBoost, ensuring the model is penalised appropriately for missing churners rather than simply predicting the majority class.
 
 ---
 
@@ -96,15 +95,15 @@ All metrics are reported on the held-out **test set (15%, 1,057 customers)** tha
 | **Random Forest** | **0.780** | **0.565** | 0.732 | **0.638** | **0.848** |
 | XGBoost | 0.767 | 0.544 | **0.754** | 0.632 | 0.843 |
 
-**Random Forest selected as best model based on highest AUC-ROC (0.848)** — the metric that best reflects the business goal of ranking at-risk customers for prioritised outreach regardless of threshold.
+**Random Forest selected as best model based on highest AUC-ROC (0.848),** the metric that best reflects the business goal of ranking at-risk customers for prioritised outreach regardless of threshold.
 
 ### Top 5 Churn Drivers (SHAP, mean |value|)
 
-1. **Contract** (0.113) — Month-to-month customers face zero switching cost and churn at a dramatically higher rate. Two-year contracts create commitment that is the strongest single retention lever available.
-2. **Tenure** (0.067) — The first twelve months are the highest-risk window. Each subsequent month a customer stays reduces their churn probability; loyalty compounds over time.
-3. **Online Security** (0.049) — Customers without a security add-on are less embedded in the service ecosystem. The add-on creates both practical value and psychological lock-in that suppresses churn.
-4. **Monthly Charges** (0.045) — Higher bills amplify perceived value risk. Customers paying premium rates without feeling they receive premium value are disproportionately likely to leave.
-5. **Tech Support** (0.041) — Customers without tech support feel abandoned when issues arise. Access to support resolves friction before it becomes a cancellation trigger.
+1. **Contract** (0.113): Month-to-month customers face zero switching cost and churn at a dramatically higher rate. Two-year contracts create commitment that is the strongest single retention lever available.
+2. **Tenure** (0.067): The first twelve months are the highest-risk window. Each subsequent month a customer stays reduces their churn probability; loyalty compounds over time.
+3. **Online Security** (0.049): Customers without a security add-on are less embedded in the service ecosystem. The add-on creates both practical value and psychological lock-in that suppresses churn.
+4. **Monthly Charges** (0.045): Higher bills amplify perceived value risk. Customers paying premium rates without feeling they receive premium value are disproportionately likely to leave.
+5. **Tech Support** (0.041): Customers without tech support feel abandoned when issues arise. Access to support resolves friction before it becomes a cancellation trigger.
 
 ---
 
@@ -186,7 +185,7 @@ streamlit run dashboard/app.py
 
 ---
 
-### Method 1 — Local (venv)
+### Method 1: Local (venv)
 
 Best for active development and debugging.
 
@@ -205,10 +204,10 @@ python -m src.train
 # 4. (Optional) Generate test-set metrics and SHAP plots
 python -m src.evaluate
 
-# 5. Terminal 1 — start the prediction API
+# 5. Terminal 1: start the prediction API
 uvicorn api.main:app --reload --port 8000
 
-# 6. Terminal 2 — start the dashboard (API must be running on :8000 first)
+# 6. Terminal 2: start the dashboard (API must be running on :8000 first)
 streamlit run dashboard/app.py
 ```
 
@@ -224,7 +223,7 @@ RETENTION_API_URL=http://localhost:9000 streamlit run dashboard/app.py
 
 ---
 
-### Method 2 — Docker Compose (recommended)
+### Method 2: Docker Compose (recommended)
 
 Brings up both services in one command. The dashboard waits for the API's health check to pass before starting.
 
@@ -241,11 +240,11 @@ docker compose down
 
 - API: `http://localhost:8000` &nbsp;·&nbsp; Dashboard: `http://localhost:8501`
 
-The `models/` directory is mounted read-only into the container. Re-running `python -m src.train` on the host surfaces the updated model on the next container restart — no rebuild required.
+The `models/` directory is mounted read-only into the container. Re-running `python -m src.train` on the host surfaces the updated model on the next container restart, with no rebuild required.
 
 ---
 
-### Method 3 — Individual Docker services
+### Method 3: Individual Docker services
 
 Useful when deploying services to separate hosts.
 
@@ -259,7 +258,7 @@ docker run --rm -p 8000:8000 \
     --name retention-api \
     customer-retention-ml:1.0
 
-# Dashboard (Terminal 2 — after API is reachable)
+# Dashboard (Terminal 2, after API is reachable)
 docker run --rm -p 8501:8501 \
     -e RETENTION_API_URL=http://host.docker.internal:8000 \
     --name retention-dashboard \
@@ -279,7 +278,7 @@ On Linux replace `host.docker.internal` with `--network host` (and drop `-p`), o
 
 ### `GET /health`
 
-Liveness probe — returns API status and loaded model information.
+Liveness probe, returns API status and loaded model information.
 
 ```bash
 curl http://localhost:8000/health
@@ -300,7 +299,7 @@ curl http://localhost:8000/health
 
 Accepts a full customer profile and returns a churn probability, human-readable verdict, confidence band, and the top 5 SHAP factors driving the decision.
 
-**Request — high-risk profile:**
+**Request (high-risk profile):**
 
 ```bash
 curl -s -X POST http://localhost:8000/predict \
@@ -378,24 +377,19 @@ curl -s -X POST http://localhost:8000/predict \
 | 0.20 – 0.35 or 0.65 – 0.80 | Medium |
 | 0.35 – 0.65 | Low (near decision boundary) |
 
-**Validation:** all 15 categorical fields use `Literal` types in Pydantic — submitting an unknown value returns HTTP 422 with a field-level error message.
+**Validation:** all 15 categorical fields use `Literal` types in Pydantic. Submitting an unknown value returns HTTP 422 with a field-level error message.
 
 ---
 
 ## Key Learnings
 
-- **Random Forest outperformed XGBoost on this dataset.** XGBoost's sequential boosting gains are most pronounced on larger datasets with an extended hyperparameter search budget. On roughly 5,000 training rows with default parameters, Random Forest's bagging approach — averaging 200 independently grown trees — was more robust to the mix of ordinal label-encoded categoricals and continuous billing features. XGBoost would likely close the gap with a proper search over `max_depth`, `learning_rate`, and `min_child_weight` using Optuna or Bayesian optimisation.
+- **Random Forest outperformed XGBoost on this dataset.** XGBoost's sequential boosting gains are most pronounced on larger datasets with an extended hyperparameter search budget. On roughly 5,000 training rows with default parameters, Random Forest's bagging approach (averaging 200 independently grown trees) was more robust to the mix of ordinal label-encoded categoricals and continuous billing features. XGBoost would likely close the gap with a proper search over `max_depth`, `learning_rate`, and `min_child_weight` using Optuna or Bayesian optimisation.
 
-- **AUC-ROC was chosen over accuracy as the primary model selection metric.** With a 73/27 class split, a classifier that always predicts "no churn" achieves 73% accuracy without learning anything. AUC-ROC evaluates the model's ability to rank churners above non-churners across every possible threshold, which directly maps to the business objective of prioritising the highest-risk customers for outreach — regardless of where the decision boundary is eventually set.
+- **AUC-ROC was chosen over accuracy as the primary model selection metric.** With a 73/27 class split, a classifier that always predicts "no churn" achieves 73% accuracy without learning anything. AUC-ROC evaluates the model's ability to rank churners above non-churners across every possible threshold, which directly maps to the business objective of prioritising the highest-risk customers for outreach, regardless of where the decision boundary is eventually set.
 
 - **SHAP TreeExplainer requires the raw tree estimator, not a sklearn Pipeline wrapper.** The Logistic Regression model is wrapped in a `StandardScaler → LogisticRegression` Pipeline because label-encoded features span different numeric ranges that prevent convergence otherwise. When building the TreeExplainer for whichever model wins, the Pipeline is unwrapped by extracting the final named step and applying all preceding transformers manually before passing input to the explainer. This pattern makes the explainer logic correct and reusable regardless of which model type is selected.
 
-- **MLflow decouples experiment history from source code.** Embedding metric comparisons directly in training scripts creates silent drift as the codebase evolves. By logging parameters, metrics, and serialised artifacts to MLflow on every training run, all three model families — and any future retrains after hyperparameter tuning or feature additions — are comparable in a single UI without touching source files. The `mlruns/` directory becomes the auditable record of every experiment.
+- **MLflow decouples experiment history from source code.** Embedding metric comparisons directly in training scripts creates silent drift as the codebase evolves. By logging parameters, metrics, and serialised artifacts to MLflow on every training run, all three model families, along with any future retrains after hyperparameter tuning or feature additions, are comparable in a single UI without touching source files. The `mlruns/` directory becomes the auditable record of every experiment.
 
 - **`scale_pos_weight` and `class_weight='balanced'` solve the same problem through different mechanisms.** Sklearn's `class_weight='balanced'` reweights individual training samples in the loss so minority-class errors are penalised more heavily. XGBoost's `scale_pos_weight` multiplies the gradient contribution of positive examples by `neg / pos` (≈ 2.77 here), achieving the same effect but at the gradient level rather than the sample level. Understanding which lever each framework exposes prevents the common mistake of applying one without the other when switching between frameworks.
 
----
-
-## License
-
-MIT — see [LICENSE](LICENSE) for details.
