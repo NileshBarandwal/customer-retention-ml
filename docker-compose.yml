@@ -26,7 +26,8 @@ services:
     ports:
       - "8501:8501"
     environment:
-      RETENTION_API_URL: http://api:8000
+      # RETENTION_API_URL: http://api:8000
+      RETENTION_API_URL: https://nileshbarandwal-customer-retention-ml.hf.space
     depends_on:
       api:
         condition: service_healthy

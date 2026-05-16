@@ -21,7 +21,8 @@ import streamlit as st
 # ---------------------------------------------------------------------------
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-API_URL = os.environ.get("RETENTION_API_URL", "http://localhost:8000")
+# API_URL = os.environ.get("RETENTION_API_URL", "http://localhost:8000")
+API_URL = os.environ.get("RETENTION_API_URL", "https://nileshbarandwal-customer-retention-ml.hf.space")
 
 st.set_page_config(
     page_title="Customer Retention Predictor",
