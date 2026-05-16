@@ -34,6 +34,9 @@ customer-retention-ml/
 │   └── main.py             # FastAPI prediction service
 ├── dashboard/
 │   └── app.py              # Streamlit interactive dashboard
+├── Dockerfile              # API container image (also reused by dashboard)
+├── docker-compose.yml      # Orchestrates api + dashboard services
+├── .dockerignore
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -41,40 +44,95 @@ customer-retention-ml/
 
 ## How to Run
 
-### 1. Install dependencies
+You can run the project three ways. All three assume you have first trained the model so that `models/best_model.joblib` and `models/shap_explainer.joblib` exist:
 
 ```bash
+python -m src.train          # produces both artifacts under models/
+```
+
+---
+
+### Method 1 — Local (venv)
+
+Best for active development and debugging.
+
+```bash
+# Setup
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+
+# Train (only the first time, or after changing the pipeline)
+python -m src.train
+
+# Terminal 1 — API
+uvicorn api.main:app --reload --port 8000
+
+# Terminal 2 — Dashboard (after the API is up on :8000)
+streamlit run dashboard/app.py
 ```
 
-### 2. Train the model
+- API docs: `http://localhost:8000/docs`
+- Dashboard: `http://localhost:8501`
+
+Override the API URL the dashboard hits with `RETENTION_API_URL`, e.g.
+`RETENTION_API_URL=http://localhost:9000 streamlit run dashboard/app.py`.
+
+---
+
+### Method 2 — Docker Compose (recommended)
+
+Brings up both services with one command. The dashboard waits for the API's health check to pass before starting.
 
 ```bash
-python -m src.train
+docker compose up --build
 ```
 
-MLflow will log runs to `mlruns/`. View the UI with:
+- API: `http://localhost:8000` (docs at `/docs`, status at `/health`)
+- Dashboard: `http://localhost:8501`
+
+Stop everything:
+
+```bash
+docker compose down
+```
+
+The `models/` directory on the host is mounted read-only into the API container, so re-running `python -m src.train` on the host automatically surfaces the new model on the next API restart.
+
+---
+
+### Method 3 — Individual Docker services
+
+Run each service in its own container without Compose. Useful when deploying them to separate hosts.
+
+```bash
+# Build the image once
+docker build -t customer-retention-ml:1.0 .
+
+# API
+docker run --rm -p 8000:8000 \
+    -v "$(pwd)/models:/app/models:ro" \
+    --name retention-api \
+    customer-retention-ml:1.0
+
+# Dashboard (in another terminal, after the API is reachable)
+docker run --rm -p 8501:8501 \
+    -e RETENTION_API_URL=http://host.docker.internal:8000 \
+    --name retention-dashboard \
+    customer-retention-ml:1.0 \
+    streamlit run dashboard/app.py \
+        --server.port=8501 --server.address=0.0.0.0 \
+        --server.headless=true --browser.gatherUsageStats=false
+```
+
+On Linux replace `host.docker.internal` with `--network host` (and drop the `-p`) or with the host's bridge IP.
+
+---
+
+### Experiment tracking (optional)
+
+After training, browse MLflow runs locally:
 
 ```bash
 mlflow ui
 ```
-
-### 3. Start the prediction API
-
-```bash
-uvicorn api.main:app --reload --port 8000
-```
-
-Interactive docs available at `http://localhost:8000/docs`.
-
-### 4. Launch the dashboard
-
-> ⚠️ **Important:** the dashboard expects the API to already be running on `http://localhost:8000` (the default of step 3). Start the API in one terminal **first**, then launch the dashboard in a separate terminal. If you want to point the dashboard at a different host or port, set the `RETENTION_API_URL` environment variable before running it, e.g. `RETENTION_API_URL=http://localhost:9000 streamlit run dashboard/app.py`.
-
-```bash
-streamlit run dashboard/app.py
-```
-
-Opens at `http://localhost:8501`.

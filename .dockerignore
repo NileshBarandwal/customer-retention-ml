@@ -1,0 +1,28 @@
+# Version control
+.git/
+.gitignore
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Project artifacts not needed in the image
+mlruns/
+data/
+notebooks/
+
+# Joblib files at project root (models/ is mounted as a volume in compose)
+/*.joblib
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
