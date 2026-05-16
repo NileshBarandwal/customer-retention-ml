@@ -14,11 +14,16 @@
 
 ## Screenshots
 
-| Dashboard prediction | SHAP global importance |
+| High-risk prediction | Low-risk prediction |
 |---|---|
-| ![Dashboard](docs/screenshots/dashboard_prediction.png) | ![SHAP](docs/screenshots/shap_summary.png) |
+| ![High Risk](docs/screenshots/dashboard_prediction.png) | ![Low Risk](docs/screenshots/dashboard_prediction_low_risk.png) |
+| *High-risk customer: 75.9% churn probability — Will Leave* | *Low-risk customer: 14.5% churn probability — Will Stay* |
 
-*Streamlit dashboard showing churn prediction with SHAP explanation* &nbsp;·&nbsp; *SHAP feature importance — Contract type and tenure are the strongest churn drivers*
+| SHAP global importance |
+|---|
+| ![SHAP](docs/screenshots/shap_summary.png) |
+
+*SHAP feature importance — Contract type and tenure are the strongest churn drivers*
 
 ---
 
