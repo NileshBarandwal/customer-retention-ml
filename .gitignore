@@ -22,19 +22,18 @@ ENV/
 mlruns/
 mlartifacts/
 
-# Data files
-data/*.csv
+# Data files — raw only; processed outputs are committed for deployment
+data/telco_churn.csv
 data/*.parquet
 data/*.json
 data/*.xlsx
 data/*.db
 
-# Model artifacts
-models/
-*.pkl
-*.joblib
-*.model
-*.bin
+# Model artifacts — committed to repo for deployment (Render/Streamlit Cloud)
+# Keep: models/best_model.joblib, models/shap_explainer.joblib
+models/logistic_regression.joblib
+models/random_forest.joblib
+models/xgboost.joblib
 
 # OS
 .DS_Store
