@@ -1,13 +1,3 @@
----
-title: Customer Retention ML
-emoji: 📊
-colorFrom: blue
-colorTo: red
-sdk: docker
-pinned: false
-short_description: Telecom churn prediction API with XGBoost and SHAP
----
-
 # Customer Retention Prediction using ML
 
 > An end-to-end machine learning system that predicts whether a telecom customer will leave, explains why, and serves predictions via a REST API and interactive dashboard.
