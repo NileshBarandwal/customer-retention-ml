@@ -5,7 +5,7 @@ colorFrom: blue
 colorTo: red
 sdk: docker
 pinned: false
-short_description: ML system predicting customer retention with XGBoost and SHAP
+short_description: Telecom churn prediction API with XGBoost and SHAP
 ---
 
 # Customer Retention Prediction using ML
