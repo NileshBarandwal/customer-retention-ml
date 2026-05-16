@@ -71,6 +71,8 @@ Interactive docs available at `http://localhost:8000/docs`.
 
 ### 4. Launch the dashboard
 
+> ⚠️ **Important:** the dashboard expects the API to already be running on `http://localhost:8000` (the default of step 3). Start the API in one terminal **first**, then launch the dashboard in a separate terminal. If you want to point the dashboard at a different host or port, set the `RETENTION_API_URL` environment variable before running it, e.g. `RETENTION_API_URL=http://localhost:9000 streamlit run dashboard/app.py`.
+
 ```bash
 streamlit run dashboard/app.py
 ```
