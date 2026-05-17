@@ -11,6 +11,17 @@
 
 ---
 
+## Live Demo
+
+| Service | URL |
+|---------|-----|
+| Streamlit Dashboard | https://customer-retention-ml-yym36x8autejp5dap7nopz.streamlit.app/ |
+| FastAPI Backend | https://nileshbarandwal-customer-retention-ml.hf.space |
+| API Docs (Swagger) | https://nileshbarandwal-customer-retention-ml.hf.space/docs |
+| API Health Check | https://nileshbarandwal-customer-retention-ml.hf.space/health |
+
+---
+
 ## Screenshots
 
 | High-risk prediction | Low-risk prediction |
